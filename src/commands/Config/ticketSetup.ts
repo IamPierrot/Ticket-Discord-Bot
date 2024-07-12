@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ChannelType, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
 import { SlashCommands } from "../../cmds";
-import ticketModel from "../../database/models/TicketModel";
+import ticketModel from "../../database/models/ticketModel";
 
 const ticketSetup = {
     lost: {

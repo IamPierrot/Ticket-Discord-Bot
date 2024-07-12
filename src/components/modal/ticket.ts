@@ -1,7 +1,7 @@
 import { CategoryChannel, ChannelType, EmbedBuilder, ModalSubmitInteraction, TextChannel } from "discord.js";
 import { ModalComponent } from "../../component";
 import { LoliBotClient } from "../../utils/clients";
-import ticketModel from "../../database/models/TicketModel";
+import ticketModel from "../../database/models/ticketModel";
 import { sendTicketInformation } from "../../utils/functions";
 
 export default {
@@ -57,7 +57,7 @@ export default {
 
             await Promise.all([
                 ticketData.save(),
-                sendTicketInformation(client, interaction, newTicketChannel),
+                sendTicketInformation(client, interaction, newTicketChannel, logChannel),
                 logChannel.send({ embeds: [logEmbed] })
             ]);
 
