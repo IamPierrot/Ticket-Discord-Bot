@@ -1,0 +1,35 @@
+{
+  "name": "neyuq-casino-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/src/index.js",
+  "devDependencies": {
+    "@types/moment-duration-format": "^2.2.6",
+    "@types/node": "^20.12.7",
+    "copyfiles": "^2.4.1",
+    "discord-api-types": "^0.37.80",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "start": "tsc && npm run copy-assets && node .",
+    "build": "tsc",
+    "deploy": "node .",
+    "copy-assets": "copyfiles -u 1 src/assets/**/* dist/src"
+  },
+  "author": "Pierrot",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "chalk": "^4.1.2",
+    "cpu-stat": "^2.0.1",
+    "discord.js": "^14.14.1",
+    "moment": "^2.30.1",
+    "moment-duration-format": "^2.3.2",
+    "mongoose": "^8.3.2",
+    "ms": "^2.1.3",
+    "pm2": "^5.3.1",
+    "prism-media": "^1.3.5",
+    "probability-node": "^0.0.1",
+    "table": "^6.8.2"
+  }
+}
