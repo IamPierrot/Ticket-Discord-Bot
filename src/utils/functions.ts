@@ -85,16 +85,15 @@ export const sendTicketInformation = async (client: LoliBotClient, interaction: 
      const buttonCloseTicket = new ButtonBuilder()
           .setCustomId('close')
           .setLabel("Đóng ticket")
-          .setStyle(ButtonStyle.Success)
-          .setDisabled();
+          .setStyle(ButtonStyle.Success);
 
      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttonCloseTicket);
-
+     
      setTimeout(async () => {
-
+          
           const msg = await channel?.send({ content: "Có thế đóng ticket được chưa:c", components: [row] });
           const collector = msg?.createMessageComponentCollector({
-               componentType: ComponentType.StringSelect
+               componentType: ComponentType.StringSelect,
           });
 
           collector?.on("collect", async i => {
@@ -142,13 +141,13 @@ export const sendTicketInformation = async (client: LoliBotClient, interaction: 
 
                               ticketResolveData.ticketResolved.push({
                                    from: interaction.user.id,
-                                   type: "",
+                                   type: client.ticketModals.get(interaction.user.id) || "unknown",
                                    at: new Date().toISOString()
                               })
                          }
 
                          await message.edit({ content: "Cảm ơn bạn! Chúc bạn 1 ngày tốt lành", embeds: [], components: [] });
-
+                         
                          client.ticketModals.delete(interaction.user.id);
                          setTimeout(async () => {
                               channel.delete();
