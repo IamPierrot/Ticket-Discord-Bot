@@ -33,13 +33,13 @@ export default {
             .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.avatarURL()! })
             .setTitle("Chọn người giải quyết ticket!")
 
-        const msg = await interaction.editReply({ embeds: [pickResolveEmbed], components: [rowMenu] });
+        const msg = await message?.edit({ embeds: [pickResolveEmbed], components: [rowMenu] });
 
-        const menuCollector = msg.createMessageComponentCollector({
+        const menuCollector = msg?.createMessageComponentCollector({
             componentType: ComponentType.StringSelect
         });
 
-        menuCollector.on('collect', async menuInteraction => {
+        menuCollector?.on('collect', async menuInteraction => {
             const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
             if (!ticketData) throw new Error("có lỗi trong pick menu");
 
@@ -53,8 +53,10 @@ export default {
                 })
                 await ticketResolveData.save();
             }
+            
+            await msg?.edit("Cảm ơn bạn! Chúc bạn 1 ngày tốt lành");
 
-            await msg?.edit({ content: "Cảm ơn bạn! Chúc bạn 1 ngày tốt lành", embeds: [], components: [] });
+            await interaction.editReply("Thực hiện sao lưu ticket!");
 
             client.ticketModals.delete(interaction.channelId);
             client.ticketModals.delete(userCreate?.id!);

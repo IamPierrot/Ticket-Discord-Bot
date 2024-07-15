@@ -77,7 +77,6 @@ export const sendTicketInformation = async (client: LoliBotClient, interaction: 
      await Promise.all([
           interaction.editReply({ embeds: [successEmbed], files: [successImg] }),
           channel?.send({ embeds: [toTicket] }),
-          logChannel.send({ embeds: [successEmbed], files: [successImg] })
      ])
 
      const buttonCloseTicket = new ButtonBuilder()
