@@ -1,29 +1,29 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-interface ITicketSchema {
-    categories: [
-        {
-            categoryName: string
-            categoryId: string
-            logChannelId: string
-            ticketChannelIds: string[]
-        }
-    ]
-    guildId: string
+interface Category {
+    categoryName: string;
+    categoryId: string;
+    logChannelId: string;
+    ticketChannelIds: string[];
 }
 
+export interface ITicketSchema extends Document {
+    guildId: string;
+    categories: Category[];
+}
 
-const ticketSchema = new mongoose.Schema<ITicketSchema & Document>({
+const categorySchema = new Schema<Category>({
+    categoryName: { type: String, required: true },
+    categoryId: { type: String, required: true },
+    logChannelId: { type: String, required: true },
+    ticketChannelIds: { type: [String], default: [] }
+}, { _id: false });
+
+const ticketSchema = new Schema<ITicketSchema>({
     guildId: { type: String, required: true },
-    categories: [
-        {
-            categoryName: { type: String, required: true },
-            categoryId: { type: String, required: true },
-            logChannelId: { type: String, required: true },
-            ticketChannelIds: [{ type: String }]
-        }
-    ]
-})
-const ticketModel = mongoose.model('ticket', ticketSchema);
+    categories: { type: [categorySchema], default: [] }
+});
+
+const ticketModel = mongoose.model<ITicketSchema>('Ticket', ticketSchema);
 
 export default ticketModel;

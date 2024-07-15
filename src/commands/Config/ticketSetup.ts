@@ -141,6 +141,7 @@ export default {
             const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(ticketMenu);
 
             await ticketManager?.send({ embeds: [embed], components: [row] });
+            await interaction.editReply("Setup thành công!");
         } catch (err) {
             await interaction.editReply({
                 embeds: [

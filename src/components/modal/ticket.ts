@@ -52,14 +52,15 @@ export default {
                         inline: true
                     }
                 ])
-                .setTimestamp()
+                .setTimestamp();
 
-
-            await Promise.all([
+            client.ticketModals.set(newTicketChannel.id, interaction.user.id);
+            const promises = await Promise.all([
                 ticketData.save(),
                 sendTicketInformation(client, interaction, newTicketChannel, logChannel),
                 logChannel.send({ embeds: [logEmbed] })
             ]);
+            setTimeout(() => promises[2].delete(), 1 * 60 * 1000);
 
         } catch (error) {
             await interaction.editReply({

@@ -4,8 +4,6 @@ import fs from 'fs';
 import chalk from "chalk";
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder, Interaction, ModalSubmitInteraction, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextChannel } from "discord.js";
 import { LoliBotClient } from "./clients";
-import ticketModel from "../database/models/ticketModel";
-import ticketResolveModel from "../database/models/ticketResolveModel";
 
 export function getAllFiles(directory: string, foldersOnly: boolean = false): string[] {
      const fileNames: string[] = [];
@@ -85,11 +83,12 @@ export const sendTicketInformation = async (client: LoliBotClient, interaction: 
      const buttonCloseTicket = new ButtonBuilder()
           .setCustomId('close')
           .setLabel("Đóng ticket")
-          .setStyle(ButtonStyle.Success);
+          .setStyle(ButtonStyle.Primary);
 
      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttonCloseTicket);
-     
+
      setTimeout(async () => {
-          await channel?.send({ content: "Có thế đóng ticket được chưa:c", components: [row] });
+          const message = await channel?.send({ content: "Có thế đóng ticket được chưa:c", components: [row] });
+          client.userComponent.set(interaction.user.id, { custom_id: 'close', msg: message });
      }, 2 * 60 * 1000)
 }
