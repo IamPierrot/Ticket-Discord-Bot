@@ -14,15 +14,14 @@ export default {
             const embed = new EmbedBuilder()
                 .setTitle("Danh sách người giải quyết ticket")
                 .setColor("Gold")
+                .addFields(resolvers.map(resolver => {
+                    return {
+                        name: `Người giải quyết: ${resolver.label}`,
+                        value: `**Ping:** <@${resolver.userId}>`,
+                        inline: false
+                    }
+                }))
                 .setTimestamp();
-
-            resolvers.forEach(resolver => {
-                embed.addFields({
-                    name: `Người giải quyết: ${resolver.label}`,
-                    value: `**Ping:** <@${resolver.userId}>`,
-                    inline: false
-                });
-            });
 
             return message.reply({ embeds: [embed] });
         } catch (error) {

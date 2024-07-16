@@ -74,11 +74,6 @@ export const sendTicketInformation = async (client: LoliBotClient, interaction: 
           .setTimestamp()
           .setFooter({ text: "Yêu cầu sẽ được xem xét trong vài phút ", iconURL: client.user?.avatarURL()! });
 
-     await Promise.all([
-          interaction.editReply({ embeds: [successEmbed], files: [successImg] }),
-          channel?.send({ embeds: [toTicket] }),
-     ])
-
      const buttonCloseTicket = new ButtonBuilder()
           .setCustomId('close')
           .setLabel("Đóng ticket")
@@ -86,8 +81,10 @@ export const sendTicketInformation = async (client: LoliBotClient, interaction: 
 
      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(buttonCloseTicket);
 
-     setTimeout(async () => {
-          const message = await channel?.send({ content: "Có thế đóng ticket được chưa:c", components: [row] });
-          client.userComponent.set(interaction.user.id, { custom_id: 'close', msg: message });
-     }, 2 * 60 * 1000)
+     await Promise.all([
+          interaction.editReply({ embeds: [successEmbed], files: [successImg] }),
+          channel?.send({ embeds: [toTicket], components: [row] }),
+     ])
+
+
 }

@@ -6,7 +6,7 @@ import { sendTicketInformation } from "../../utils/functions";
 
 export default {
     name: "ticket",
-    callback: async (client, interaction, customId) => {
+    callback: async (client, interaction) => {
         const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
         if (!ticketData) return await interaction.editReply("Đã có lỗi vui lòng thông báo cho admin");
         // Lấy channel bằng id trong db
@@ -39,7 +39,7 @@ export default {
 
             const logEmbed = new EmbedBuilder()
                 .setAuthor({ name: "Thông báo tạo ticket", iconURL: client.user?.avatarURL()! })
-                .setTitle(`${interaction.user.toString()} đã tạo ticket mới`)
+                .setTitle(`${interaction.user.tag} đã tạo ticket mới`)
                 .addFields([
                     {
                         name: "Loại Ticket",

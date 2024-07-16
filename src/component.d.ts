@@ -17,10 +17,9 @@ export declare interface StringSelectMenuComponent extends BaseComponent {
 }
 
 export declare interface ButtonStandardComponent extends BaseComponent {
-     readonly type: 'standard'
-     callback: (client: LoliBotClient, interaction: ButtonInteraction, customId: string, message: Message<boolean> | undefined) => Promise<unknown>
+     callback: (client: LoliBotClient, interaction: ButtonInteraction) => Promise<unknown>
 }
 
 export declare interface ModalComponent extends BaseComponent {
-     callback: (client: LoliBotClient, interaction: ModalSubmitInteraction, customId: string) => Promise<unknown>
+     callback: (client: LoliBotClient, interaction: ModalSubmitInteraction) => Promise<unknown>
 }

@@ -6,18 +6,14 @@ export = async (client: LoliBotClient, interaction: Interaction) => {
      try {
           if (!interaction.isMessageComponent()) return;
 
+          const customId = interaction.customId;
           if (interaction.isButton()) {
-               const customId = interaction.customId;
-               console.log("hello?");
-               // Check if it's a normal button
-               const normalButton = client.components.buttons.find((cpt) => cpt.name === customId);
-               if (normalButton) {
-                    const user = client.userComponent.get(interaction.user.id);
-                    // if (!user) return;
+               const button = client.components.buttons.find((cpt) => cpt.name === customId);
+               if (button) {
 
-                    await interaction.deferReply({ ephemeral: true });
+                    await interaction.deferReply();
 
-                    // if (!client.userComponent.has(interaction.user.id) || !(user?.custom_id == customId) || interaction.user.id == user?.msg.author.id) {
+                    // if (button.type !== "global" && interaction.message.author.id !== interaction.user.id) {
                     //      const unauthorizedMessage = new EmbedBuilder()
                     //           .setAuthor({ name: "Cái nút này không phải dành cho bạn!" })
                     //           .setColor('Red');
@@ -25,7 +21,7 @@ export = async (client: LoliBotClient, interaction: Interaction) => {
                     //      setTimeout(() => interaction.deleteReply(), 40000);
                     // }
 
-                    await normalButton.callback(client, interaction, customId, user?.msg);
+                    await button.callback(client, interaction);
                }
 
                if (!interaction.replied && !interaction.deferred) {
@@ -41,7 +37,7 @@ export = async (client: LoliBotClient, interaction: Interaction) => {
                if (menuName) {
                     const menu = client.components.menus.find((m) => m.name === menuName);
                     if (menu) {
-                         menu.type !== "hasmodal" && await interaction.deferReply({ ephemeral: true });
+                         menu.type !== "hasmodal" && await interaction.deferReply();
                          await menu.callback(client, interaction, values);
                     }
                }

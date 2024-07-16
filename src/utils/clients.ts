@@ -12,7 +12,6 @@ globalThis.configure = require('../../config.json');
 
 
 export class LoliBotClient extends Client {
-     userComponent: Collection<string, { custom_id: string, msg: Message<boolean> }> = new Collection();
      cooldowns: Collection<string, Collection<string, number>> = new Collection();
      ticketModals: Collection<string, string> = new Collection();
 

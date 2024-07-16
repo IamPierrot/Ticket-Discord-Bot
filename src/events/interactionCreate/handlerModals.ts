@@ -8,8 +8,8 @@ export = async (client: LoliBotClient, interaction: Interaction) => {
     if (!modalObject) return;
 
     try {
-        await interaction.deferReply({ ephemeral: true });
-        await modalObject.callback(client, interaction, interaction.customId);
+        await interaction.deferReply();
+        await modalObject.callback(client, interaction);
     } catch (error) {
         console.log('there was an error modals: ', error);
     }

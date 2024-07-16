@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { StringSelectMenuComponent } from "../../component";
 
 export default {
@@ -6,6 +6,18 @@ export default {
     type: "hasmodal",
 
     callback: async (client, interaction, values) => {
+        if (client.ticketModals.has(interaction.user.id)) {
+            return await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Tạo ticket mới thất bại!")
+                        .setDescription("Bạn đã tạo 1 ticket rồi!")
+                        .setColor("Red")
+                ],
+                ephemeral: true
+            }).then(msg => setTimeout(() => msg.delete(), 20000));
+        }
+
         const modal = new ModalBuilder()
             .setCustomId('ticket')
             .setTitle("Phiếu tạo ticket");
