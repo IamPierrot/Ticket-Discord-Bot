@@ -2,12 +2,20 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "disc
 import { StringSelectMenuComponent } from "../../component";
 import ticketModel from "../../database/models/ticketModel";
 import ticketResolveModel from "../../database/models/ticketResolveModel";
+import userTicketModel from "../../database/models/userTicket";
+import ticketResolverModel from "../../database/models/ticketResolverModel";
 
 export default {
     name: "pick",
 
     callback: async (client, interaction, values) => {
-        const userCreate = client.users.cache.find(u => u.id === client.ticketModals.get(interaction.channelId)!);
+        const userTicketData = await userTicketModel.findOne({ ticketChannelId: interaction.channelId });
+        const ticketResolverData = await ticketResolverModel.find();
+        if (!userTicketData || ticketResolverData.length <= 0) return;
+
+        if (!ticketResolverData.some(v => v.userId === interaction.user.id)) return await interaction.editReply("Bạn không có quyền dùng thứ này!");
+
+        const userCreate = client.users.cache.find(u => u.id === userTicketData.userId);
 
         const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
         if (!ticketData) throw new Error("có lỗi trong pick menu");
@@ -20,7 +28,7 @@ export default {
 
             ticketResolveData.ticketResolved.push({
                 from: userCreate?.id!,
-                type: client.ticketModals.get(userCreate?.id!) || "unknown",
+                type: userTicketData.categoryName || "unknown",
                 at: new Date().toISOString()
             })
             await ticketResolveData.save();

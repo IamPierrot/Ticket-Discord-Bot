@@ -1,15 +1,18 @@
 import { ButtonStandardComponent } from "../../component";
+import userTicketModel from "../../database/models/userTicket";
 
 export default {
     name: "closeticket",
 
     callback: async (client, interaction) => {
-        const userCreate = client.users.cache.find(u => u.id === client.ticketModals.get(interaction.channelId)!);
+        const userTicketData = await userTicketModel.findOne({ ticketChannelId: interaction.channelId });
+        if (!userTicketData) return interaction.editReply("Có lỗi khi đóng hẵn ticket!");
+        
+        const userCreate = client.users.cache.get(userTicketData.userId);
+        
         if (!userCreate) return;
         await interaction.editReply("Tiến hành xoá ticket trong vài giây nữa~");
-
-        client.ticketModals.delete(interaction.channelId);
-        client.ticketModals.delete(userCreate.id)
+        await userTicketData.deleteOne();
 
         setTimeout(async () => {
             interaction.channel?.delete();

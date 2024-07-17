@@ -6,7 +6,8 @@ export default {
     callback: async (client, interaction) => {
         const ticketResolverData = await ticketResolverModel.find();
         if (!ticketResolverData) return;
-
-        await interaction.editReply({ content: `Dậy đê các con giời ${ticketResolverData.map(v => `<@${v.userId}>`).join(" ")}` })
+        
+        await interaction.editReply("Mở lại Ticket!");
+        await interaction.channel?.send({ content: `Dậy đê các con giời ${ticketResolverData.map(v => `<@${v.userId}>`).join(" ")}` })
     },
 } as const as ButtonStandardComponent; 

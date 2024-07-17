@@ -13,7 +13,6 @@ globalThis.configure = require('../../config.json');
 
 export class LoliBotClient extends Client {
      cooldowns: Collection<string, Collection<string, number>> = new Collection();
-     ticketModals: Collection<string, string> = new Collection();
 
      readonly prefixCommands: PrefixCommands[] = [];
      readonly slashCommands: SlashCommands[] = [];

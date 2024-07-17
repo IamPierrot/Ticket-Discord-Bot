@@ -3,14 +3,16 @@ import { ModalComponent } from "../../component";
 import { LoliBotClient } from "../../utils/clients";
 import ticketModel from "../../database/models/ticketModel";
 import { sendTicketInformation } from "../../utils/functions";
+import userTicketModel from "../../database/models/userTicket";
 
 export default {
     name: "ticket",
     callback: async (client, interaction) => {
         const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
-        if (!ticketData) return await interaction.editReply("Đã có lỗi vui lòng thông báo cho admin");
+        const userTicketData = await userTicketModel.findOne({ userId: interaction.user.id });
+        if (!ticketData || !userTicketData) return await interaction.editReply("Đã có lỗi vui lòng thông báo cho admin");
         // Lấy channel bằng id trong db
-        const category = ticketData.categories.find(c => c.categoryName === client.ticketModals.get(interaction.user.id))!;
+        const category = ticketData.categories.find(c => c.categoryName === userTicketData.categoryName)!;
         const categoryChannel = interaction.guild?.channels.cache.find(c => c.id === category?.categoryId && c.type === ChannelType.GuildCategory) as CategoryChannel;
         const logChannel = interaction.guild?.channels.cache.find(c => c.id === category.logChannelId && c.type === ChannelType.GuildText) as TextChannel;
 
@@ -21,7 +23,7 @@ export default {
                 parent: categoryChannel,
                 permissionOverwrites: [
                     {
-                        id: interaction.guild.id, // Deny access to everyone in the guild
+                        id: interaction.guild.id, // Den access to everyone in the guild
                         deny: "ViewChannel",
                     },
                     {
@@ -36,6 +38,10 @@ export default {
             })
             if (!newTicketChannel) throw new Error();
             category.ticketChannelIds.push(newTicketChannel.id);
+            
+            userTicketData.ticketChannelId = newTicketChannel.id;
+            userTicketData.logChannelId = logChannel.id;
+            userTicketData.categoryId = category.categoryId;
 
             const logEmbed = new EmbedBuilder()
                 .setAuthor({ name: "Thông báo tạo ticket", iconURL: client.user?.avatarURL()! })
@@ -54,9 +60,9 @@ export default {
                 ])
                 .setTimestamp();
 
-            client.ticketModals.set(newTicketChannel.id, interaction.user.id);
             await Promise.all([
                 ticketData.save(),
+                userTicketData.save(),
                 sendTicketInformation(client, interaction, newTicketChannel, logChannel),
                 logChannel.send({ embeds: [logEmbed] })
             ]);

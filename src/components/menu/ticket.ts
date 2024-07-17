@@ -1,32 +1,36 @@
 import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { StringSelectMenuComponent } from "../../component";
+import userTicketModel from "../../database/models/userTicket";
 
 export default {
     name: "ticket",
     type: "hasmodal",
 
     callback: async (client, interaction, values) => {
-        if (client.ticketModals.has(interaction.user.id)) {
-            return await interaction.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Tạo ticket mới thất bại!")
-                        .setDescription("Bạn đã tạo 1 ticket rồi!")
-                        .setColor("Red")
-                ],
-                ephemeral: true
-            }).then(msg => setTimeout(() => msg.delete(), 20000));
-        }
+        if (await userTicketModel.findOne({ userId: interaction.user.id })) return await interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("Tạo ticket mới thất bại!")
+                    .setDescription("Bạn đã tạo 1 ticket rồi!")
+                    .setColor("Red")
+            ],
+            ephemeral: true
+        }).then(msg => setTimeout(() => msg.delete(), 20000));
 
         const modal = new ModalBuilder()
             .setCustomId('ticket')
             .setTitle("Phiếu tạo ticket");
 
         const value = values[0];
-        client.ticketModals.set(interaction.user.id, value);
 
+       
+        const userTicketData = new userTicketModel({ userId: interaction.user.id }) 
+
+        userTicketData.categoryName = value;
+
+        await userTicketData.save();
         const ingameInput = new TextInputBuilder()
-            .setCustomId('ingame')
+                .setCustomId('ingame')
             .setRequired(true)
             .setPlaceholder('VD: Hauluu_nek, haumilkso1vn,...')
             .setLabel("Tên game của bạn?")
