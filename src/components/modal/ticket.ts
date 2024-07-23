@@ -8,12 +8,18 @@ import userTicketModel from "../../database/models/userTicket";
 export default {
     name: "ticket",
     callback: async (client, interaction) => {
-             const ingame = interaction.fields.getTextInputValue('ingame');
-     const gadget = interaction.fields.getTextInputValue('gadget');
-     const reason = interaction.fields.getTextInputValue('reason');
-if (!ingame || !reason || !gadget) return;
-const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
-        const userTicketData = await userTicketModel.findOne({ userId: interaction.user.id });
+        const ingame = interaction.fields.getTextInputValue('ingame');
+        const gadget = interaction.fields.getTextInputValue('gadget');
+        const reason = interaction.fields.getTextInputValue('reason')
+        ;
+        if (!ingame || !reason || !gadget) return;
+
+        const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
+        const userTicketData = await userTicketModel.findOne({ userId: interaction.user.id }) ||new userTicketModel({ userId: interaction.user.id });
+
+        userTicketData.categoryName = client.categoryName.get(interaction.user.id)!;
+
+        await userTicketData.save();
         if (!ticketData || !userTicketData) return await interaction.editReply("Đã có lỗi vui lòng thông báo cho admin");
         // Lấy channel bằng id trong db
         const category = ticketData.categories.find(c => c.categoryName === userTicketData.categoryName)!;
@@ -42,7 +48,7 @@ const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
             })
             if (!newTicketChannel) throw new Error();
             category.ticketChannelIds.push(newTicketChannel.id);
-            
+
             userTicketData.ticketChannelId = newTicketChannel.id;
             userTicketData.logChannelId = logChannel.id;
             userTicketData.categoryId = category.categoryId;
@@ -64,6 +70,8 @@ const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
                 ])
                 .setTimestamp();
 
+            
+            client.categoryName.delete(interaction.user.id);
             await Promise.all([
                 ticketData.save(),
                 userTicketData.save(),

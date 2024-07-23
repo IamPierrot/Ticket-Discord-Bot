@@ -22,13 +22,8 @@ export default {
             .setTitle("Phiếu tạo ticket");
 
         const value = values[0];
+        client.categoryName.set(interaction.user.id, value);
 
-       
-        const userTicketData = new userTicketModel({ userId: interaction.user.id }) 
-
-        userTicketData.categoryName = value;
-
-        await userTicketData.save();
         const ingameInput = new TextInputBuilder()
                 .setCustomId('ingame')
             .setRequired(true)

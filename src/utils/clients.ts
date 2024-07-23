@@ -1,4 +1,4 @@
-import { Client, ClientOptions, Collection, GatewayIntentBits, Message, Partials } from "discord.js";
+import { Client, ClientOptions, Collection, GatewayIntentBits, Message, Partials, StringSelectMenuBuilder } from "discord.js";
 import * as path from 'path';
 import { PrefixCommands, SlashCommands } from "../cmds";
 import prefixModel from "../database/models/prefixModel";
@@ -13,6 +13,7 @@ globalThis.configure = require('../../config.json');
 
 export class LoliBotClient extends Client {
      cooldowns: Collection<string, Collection<string, number>> = new Collection();
+     categoryName: Collection<string, string> = new Collection();
 
      readonly prefixCommands: PrefixCommands[] = [];
      readonly slashCommands: SlashCommands[] = [];
