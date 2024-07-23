@@ -8,7 +8,11 @@ import userTicketModel from "../../database/models/userTicket";
 export default {
     name: "ticket",
     callback: async (client, interaction) => {
-        const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
+             const ingame = interaction.fields.getTextInputValue('ingame');
+     const gadget = interaction.fields.getTextInputValue('gadget');
+     const reason = interaction.fields.getTextInputValue('reason');
+if (!ingame || !reason || !gadget) return;
+const ticketData = await ticketModel.findOne({ guildId: interaction.guildId });
         const userTicketData = await userTicketModel.findOne({ userId: interaction.user.id });
         if (!ticketData || !userTicketData) return await interaction.editReply("Đã có lỗi vui lòng thông báo cho admin");
         // Lấy channel bằng id trong db
