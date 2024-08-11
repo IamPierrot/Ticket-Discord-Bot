@@ -53,12 +53,14 @@ export default {
         modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
 
         await interaction.showModal(modal);
-        
+
         const collected = await interaction.awaitModalSubmit({
             filter: i => i.user.id == interaction.user.id,
             time: 60000
         })
-        if (!collected) return await interaction.deferUpdate();
+        if (!collected) return;
+
+        await collected.deferReply({ ephemeral: true });
 
         const ingame = collected.fields.getTextInputValue('ingame');
         const gadget = collected.fields.getTextInputValue('gadget');
@@ -118,7 +120,7 @@ export default {
                     }
                 ])
                 .setTimestamp();
-                
+
             await Promise.all([
                 ticketData.save(),
                 userTicketData.save(),
@@ -135,7 +137,7 @@ export default {
             });
             return console.log(error);
         }
-        
+
 
     },
 } as const as StringSelectMenuComponent;
