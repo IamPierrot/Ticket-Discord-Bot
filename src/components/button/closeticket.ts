@@ -5,7 +5,7 @@ export default {
     name: "closeticket",
 
     callback: async (client, interaction) => {
-        const userTicketData = await userTicketModel.findOne({ ticketChannelId: interaction.channelId });
+        const userTicketData = await userTicketModel.findOne({ ticketChannelId: interaction.channelId});
         if (!userTicketData) return interaction.editReply("Có lỗi khi đóng hẵn ticket!");
         
         const userCreate = client.users.cache.get(userTicketData.userId);
