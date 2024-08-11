@@ -15,6 +15,16 @@ export default {
 
         const value = values[0];
 
+        if (await userTicketModel.findOne({ userId: interaction.user.id, categoryName: value })) return await interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("Tạo ticket mới thất bại!")
+                    .setDescription("Bạn đã tạo 1 ticket rồi!")
+                    .setColor("Red")
+            ],
+            ephemeral: true
+        }).then(msg => setTimeout(() => msg.delete(), 20000));
+
         const ingameInput = new TextInputBuilder()
             .setCustomId('ingame')
             .setRequired(true)
@@ -108,9 +118,7 @@ export default {
                     }
                 ])
                 .setTimestamp();
-
-
-            client.categoryName.delete(collected.user.id);
+                
             await Promise.all([
                 ticketData.save(),
                 userTicketData.save(),
